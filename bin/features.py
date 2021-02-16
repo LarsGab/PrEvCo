@@ -92,7 +92,8 @@ class Node_features:
         score = 0.0
         for type in gene_feature_types:
             for hint in self.evi_list[type]:
-                score += hint[src]
+                if src in hint.keys():
+                    score += hint[src]
         return score
 
     def preferred_anno(self):
