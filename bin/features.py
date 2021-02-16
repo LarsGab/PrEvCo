@@ -66,7 +66,7 @@ class Node_features:
         f.append(self.relative_support(['start_codon', 'stop_codon'], 2.0))
         for type in [['intron'], ['start_codon', 'stop_codon']]:
             for src in src_priority:
-                f.append(self.absolute_support(type, src))
+                f.append(self.absolute_support_src(type, src))
         f.append(self.preferred_anno())
         return f
 
