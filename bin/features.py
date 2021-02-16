@@ -60,12 +60,15 @@ class Node_features:
         self.pref = tx.source_anno == anno_pref
 
     def create_feature_vec(self):
-        return [self.relative_support(['intron'], self.numb_introns), \
-                self.relative_support(['start_codon', 'stop_codon'], 2.0), \
-                self.absolute_support(['intron']), \
-                self.absolute_support(['start_codon', 'stop_codon']), \
-                self.preferred_anno() \
-                ]
+        f = []
+        src_priority = ['E', 'P', 'C', 'M']
+        f.append(self.relative_support(['intron'], self.numb_introns))
+        f.append(self.relative_support(['start_codon', 'stop_codon'], 2.0))
+        for type in [['intron'], ['start_codon', 'stop_codon']]:
+            for src in src_priority:
+                f.append(absolute_support(type, src))
+        f.append(self.preferred_anno())
+        return f
 
 
     def relative_support(self, gene_feature_types, abs_numb):
@@ -83,6 +86,13 @@ class Node_features:
             for hint in self.evi_list[type]:
                 for src in hint.keys():
                     score += self.sw[src] * hint[src]
+        return score
+
+    def absolute_support_src(self, gene_feature_types, src):
+        score = 0.0
+        for type in gene_feature_types:
+            for hint in self.evi_list[type]:
+                score += hint[src]
         return score
 
     def preferred_anno(self):
